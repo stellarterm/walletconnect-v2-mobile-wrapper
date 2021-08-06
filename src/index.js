@@ -4,11 +4,51 @@ import { WalletConnectService } from './wallet-connect-service';
 // initialize wallet connect
 const WC = new WalletConnectService();
 
+
 // GLOBAL METHODS
 
-// need to call first for initialization
+
+// methods declared on native platforms
+window.customPostMessage = (data) => {
+  const stringify = JSON.stringify(data);
+  // IOS
+  if (window.webkit) {
+    try {
+      window.webkit.messageHandlers.sumbitToiOS.postMessage(stringify);
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  // android
+  if (window.android) {
+    window.android.postMessage(stringify);
+  }
+
+  // web
+  console.log(stringify);
+}
+
+// wait until the scripts are loaded
+window.onload = () => {
+  customPostMessage({
+    type: 'page_loaded'
+  })
+}
+
+// need to call first for initialization after scripts loading
+// metadata is json object
 window.wc_init = (metadata) => {
-  WC.init(JSON.parse(metadata));
+  try {
+    const parsedMeta = JSON.parse(metadata);
+
+    WC.init(parsedMeta);
+  } catch (e) {
+    customPostMessage({
+      type: 'error parse',
+      message: e.message,
+    })
+  }
 }
 
 // after scanning the QR-code, we call this method
@@ -40,3 +80,6 @@ window.wc_respond_success = (topic, id) => {
 window.wc_respond_error = (topic, id, errorText) => {
   WC.respondError(topic, id, errorText);
 }
+
+
+

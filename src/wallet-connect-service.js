@@ -7,24 +7,6 @@ const SUPPORTED_CHAINS = {
   }
 };
 
-// methods declared on native platforms
-const postMessage = (data) => {
-  const stringify = JSON.stringify(data);
-  // IOS
-  if (window.webkit) {
-    try {
-      window.webkit.messageHandlers.sumbitToiOS.postMessage(stringify);
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  // android
-  if (window.android) {
-    window.android.postMessage(stringify);
-  }
-}
-
 export class WalletConnectService {
   constructor() {
     this.client = null;
@@ -32,16 +14,18 @@ export class WalletConnectService {
     this.session = null;
   }
 
-  async init(metadata) {
-    this.client = await WalletConnect.init({
+  init(metadata) {
+    WalletConnect.init({
       controller: true,
       relayProvider: 'wss://relay.walletconnect.org',
       metadata,
-    })
+    }).then((result) => {
+      this.client = result;
+      this.subscribeToEvents();
 
-    this.subscribeToEvents();
+      this.checkPersistedState();
 
-    this.checkPersistedState();
+    });
   }
 
   subscribeToEvents() {
@@ -87,7 +71,7 @@ export class WalletConnectService {
           return;
         }
 
-        postMessage({
+        customPostMessage({
           type: 'session_proposal',
           proposal
         });
@@ -97,7 +81,7 @@ export class WalletConnectService {
     this.client.on(
       CLIENT_EVENTS.session.deleted,
       (session) => {
-        postMessage({
+        customPostMessage({
           type: 'session_deleted',
           session
         });
@@ -105,7 +89,7 @@ export class WalletConnectService {
     );
 
     this.client.on(CLIENT_EVENTS.session.request, async (requestEvent) => {
-      postMessage({
+      customPostMessage({
         type: 'session_request',
         requestEvents: [requestEvent]
       });
@@ -116,13 +100,18 @@ export class WalletConnectService {
     const sessions = this.client.session.values;
 
     if (sessions.length) {
-      postMessage({
+      customPostMessage({
         type: 'initial_settled_sessions',
         sessions
       });
-      postMessage({
+      customPostMessage({
         type: 'initial_session_requests',
         requestEvents: this.client.session.history.pending
+      });
+    } else {
+      customPostMessage({
+        type: 'initial_settled_sessions',
+        sessions: []
       });
     }
   }
@@ -130,31 +119,31 @@ export class WalletConnectService {
   pair(uri) {
     this.client.pair({ uri })
       .then(() => {
-        postMessage({ type: 'pair_success' });
+        customPostMessage({ type: 'pair_success' });
       })
       .catch(() => {
-        postMessage({ type: 'pair_fail' });
+        customPostMessage({ type: 'pair_fail' });
       })
   }
 
   handleSessionUserApprove(publicKey) {
     const response = {
       state: {
-        accounts: [`${publicKey}@stellar:pubnet`],
+        accounts: [`stellar:pubnet:${publicKey}`],
       },
       metadata: this.client.metadata
     };
 
     this.client.approve({ proposal: this.proposal, response })
       .then((session) => {
-        postMessage({
+        customPostMessage({
           type: 'session_created',
           session,
         });
         this.proposal = null;
       })
       .catch((error) => {
-        postMessage({
+        customPostMessage({
           type: 'error',
           error
         });
@@ -167,7 +156,7 @@ export class WalletConnectService {
     this.client.reject({ proposal: this.proposal }).then(() => {
       this.proposal = null;
 
-      postMessage({ type: 'session_rejected' });
+      customPostMessage({ type: 'session_rejected' });
     })
   }
 
@@ -180,7 +169,7 @@ export class WalletConnectService {
 
   respond(response) {
     this.client.respond(response).then(() => {
-      postMessage({ type: 'respond_sent' });
+      customPostMessage({ type: 'respond_sent' });
     })
   }
 
