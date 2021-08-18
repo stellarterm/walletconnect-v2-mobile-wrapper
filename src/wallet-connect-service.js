@@ -3,7 +3,7 @@ import WalletConnect, { CLIENT_EVENTS } from '@walletconnect/client';
 const SUPPORTED_CHAINS = {
   stellar: {
     chainNames: ['stellar:pubnet', 'stellar:testnet'],
-    methods: ['stellar_signXDR']
+    methods: ['stellar_signAndSubmitXDR']
   }
 };
 
@@ -189,13 +189,15 @@ export class WalletConnectService {
     this.respond(errorResponse);
   }
 
-  respondSuccess(topic, id) {
+  respondSuccess(topic, id, status) {
     const response = {
       topic,
       response: {
         id,
         jsonrpc: '2.0',
-        result: 'success'
+        result: {
+          status
+        }
       },
     };
 

@@ -72,8 +72,8 @@ window.wc_disconnect = (topic) => {
 }
 
 // method for confirming the request
-window.wc_respond_success = (topic, id) => {
-  WC.respondSuccess(topic, id);
+window.wc_respond_success = (topic, id, status) => {
+  WC.respondSuccess(topic, id, status);
 }
 
 // method for canceling the request
