@@ -1,5 +1,6 @@
 import WalletConnect, { CLIENT_EVENTS } from '@walletconnect/client';
 
+//TODO remove stellar hardcode, add supported chains and methods to init method
 const SUPPORTED_CHAINS = {
   stellar: {
     chainNames: ['stellar:pubnet', 'stellar:testnet'],
@@ -126,9 +127,13 @@ export class WalletConnectService {
       })
   }
 
+  //TODO approve and reject session using proposal as parameter
+
+  // we approve and reject only latest session proposal
   handleSessionUserApprove(publicKey) {
     const response = {
       state: {
+        //TODO remove stellar hardcode
         accounts: [`stellar:pubnet:${publicKey}`],
       },
       metadata: this.client.metadata
@@ -173,6 +178,7 @@ export class WalletConnectService {
     })
   }
 
+  //TODO make methods respondError and respondSuccess universal, not only for stellar
   respondError(topic, id, errorText) {
     const errorResponse = {
       topic,

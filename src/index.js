@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 import { WalletConnectService } from './wallet-connect-service';
 
-// initialize wallet connect
+// initialize wallet connect instance
 const WC = new WalletConnectService();
 
 
@@ -14,7 +14,7 @@ window.customPostMessage = (data) => {
   // IOS
   if (window.webkit) {
     try {
-      window.webkit.messageHandlers.sumbitToiOS.postMessage(stringify);
+      window.webkit.messageHandlers.submitToiOS.postMessage(stringify);
     } catch (e) {
       console.log(e)
     }
@@ -29,16 +29,13 @@ window.customPostMessage = (data) => {
   console.log(stringify);
 }
 
-// wait until the scripts are loaded
 window.onload = () => {
   customPostMessage({
     type: 'page_loaded'
   })
 }
 
-// need to call first for initialization after scripts loading
-// metadata is json object
-window.wc_init = (metadata) => {
+window.wcInit = (metadata) => {
   try {
     const parsedMeta = JSON.parse(metadata);
 
@@ -51,33 +48,27 @@ window.wc_init = (metadata) => {
   }
 }
 
-// after scanning the QR-code, we call this method
-window.wc_pair = (uri) => {
+window.wcPair = (uri) => {
   WC.pair(uri);
 }
 
-// method for confirming the session
-window.wc_approve_session = (publicKey) => {
+window.wcApproveSession = (publicKey) => {
   WC.handleSessionUserApprove(publicKey)
 }
 
-// method for rejecting the session
-window.wc_reject_session = () => {
+window.wcRejectSession = () => {
   WC.handleSessionUserReject();
 }
 
-// method for disconnect from session
-window.wc_disconnect = (topic) => {
+window.wcDisconnect = (topic) => {
   WC.disconnect(topic);
 }
 
-// method for confirming the request
-window.wc_respond_success = (topic, id, status) => {
+window.wcRespondSuccess = (topic, id, status) => {
   WC.respondSuccess(topic, id, status);
 }
 
-// method for canceling the request
-window.wc_respond_error = (topic, id, errorText) => {
+window.wcRespondError = (topic, id, errorText) => {
   WC.respondError(topic, id, errorText);
 }
 
