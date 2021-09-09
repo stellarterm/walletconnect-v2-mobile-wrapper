@@ -1,5 +1,10 @@
 # walletconnect-v2-mobile-wrapper
 
+## Overview 
+
+This repository allows you to run the Javascript WC v2 monorepo https://github.com/WalletConnect-Labs/walletconnect-v2-monorepo in mobile native wallets (iOS and Android codebase) through webview integration.
+
+
 ## Build HTML
 
 Install node modules
@@ -9,6 +14,8 @@ Install node modules
 Build an HTML file using the command
 
 `yarn build`
+
+## Run Wallet Connect Monorepo v2.0 in iOS and Android
 
 Copy the `index.html` from the `dist/` folder to your mobile wallet application project. Instructions on how to start working with index.html, declare the postMessage method and call the JS methods on mobile platforms are available below:
 
