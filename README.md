@@ -19,8 +19,8 @@ Build an HTML file using the command
 
 Copy the `index.html` from the `dist/` folder to your mobile wallet application project. Instructions on how to start working with index.html, declare the postMessage method and call the JS methods on mobile platforms are available below:
 
-- [Android](android.md)
-- [iOS](ios.md)
+- ### [Android](android.md)
+- ### [iOS](ios.md)
 
 
 ## JavaScript methods description:
