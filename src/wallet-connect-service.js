@@ -11,8 +11,8 @@ const SUPPORTED_CHAINS = {
 export class WalletConnectService {
   constructor() {
     this.client = null;
-    this.proposal = null;
     this.session = null;
+    this.proposals = new Map();
   }
 
   init(metadata) {
@@ -35,7 +35,7 @@ export class WalletConnectService {
       async (proposal) => {
         const { permissions } = proposal;
 
-        this.proposal = proposal;
+        this.proposals.set(proposal.topic, proposal);
 
         const supportedChains = Object.values(SUPPORTED_CHAINS).reduce((acc, chain) => {
           acc.chainNames = [ ...acc.chainNames, ...chain.chainNames];
@@ -127,10 +127,7 @@ export class WalletConnectService {
       })
   }
 
-  //TODO approve and reject session using proposal as parameter
-
-  // we approve and reject only latest session proposal
-  handleSessionUserApprove(publicKey) {
+  handleSessionUserApprove(publicKey, topic) {
     const response = {
       state: {
         //TODO remove stellar hardcode
@@ -139,30 +136,32 @@ export class WalletConnectService {
       metadata: this.client.metadata
     };
 
-    this.client.approve({ proposal: this.proposal, response })
+    const proposal = this.proposals.get(topic)
+
+    this.client.approve({ proposal, response })
       .then((session) => {
         customPostMessage({
           type: 'session_created',
           session,
         });
-        this.proposal = null;
+        this.proposals.delete(topic);
       })
       .catch((error) => {
         customPostMessage({
           type: 'error',
           error
         });
-      })
-
-
+      });
   }
 
-  handleSessionUserReject() {
-    this.client.reject({ proposal: this.proposal }).then(() => {
-      this.proposal = null;
+  handleSessionUserReject(topic) {
+    const proposal = this.proposals.get(topic);
 
+    this.client.reject({ proposal }).then(() => {
       customPostMessage({ type: 'session_rejected' });
-    })
+
+      this.proposals.delete(topic);
+    });
   }
 
   disconnect(topic) {

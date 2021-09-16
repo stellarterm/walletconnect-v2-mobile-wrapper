@@ -52,12 +52,12 @@ window.wcPair = (uri) => {
   WC.pair(uri);
 }
 
-window.wcApproveSession = (publicKey) => {
-  WC.handleSessionUserApprove(publicKey)
+window.wcApproveSession = (publicKey, topic) => {
+  WC.handleSessionUserApprove(publicKey, topic)
 }
 
-window.wcRejectSession = () => {
-  WC.handleSessionUserReject();
+window.wcRejectSession = (topic) => {
+  WC.handleSessionUserReject(topic);
 }
 
 window.wcDisconnect = (topic) => {

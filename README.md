@@ -29,8 +29,8 @@ Copy the `index.html` from the `dist/` folder to your mobile wallet application 
 | --- | --- | --- |
 | `wcInit(metadata)`| call this method first after the scripts at index.html are fully loaded (`page_loaded` event) to initialize WalletConnect service. | 1. `metadata` - JSON stringify object: <br>&nbsp;&nbsp;1.1. `name` : `STRING` -  app name <br>&nbsp;&nbsp;1.2. `description` : `STRING` -  app description <br>&nbsp;&nbsp;1.3. `url` : `STRING` -  app URL<br>&nbsp;&nbsp;1.4. `icons` : `ARRAY OF STRINGS` -  app icons |  
 | `wcPair(uri)` | call this method after the QR code with URI is scanned | 1. `uri` - `STRING` -  URI scanned from WalletConnect-compatible DApp | 
-| `wcApproveSession(publicKey)` | call this method to confirm the latest session proposal | 1. `publicKey` - `STRING` -  Stellar account public key | 
-| `wcRejectSession()` | call this method to reject the latest session proposal |||
+| `wcApproveSession(publicKey, topic)` | call this method to confirm session proposal | 1. `publicKey` - `STRING` -  Stellar account public key<br> 2. `proposal` - `STRING` - proposal topic| 
+| `wcRejectSession(topic)` | call this method to reject session proposal | 1. `proposal` - `STRING` - proposal topic||
 | `wcDisconnect(topic)` | call this method to disconnect from a session | 1. `topic` - `STRING` -  session topic | 
 | `wcRespondSuccess(topic, id, status)` | call this method to confirm a request | 1. `topic` - `STRING` -  session topic<br>2. `id` - `NUMBER` -  request id<br>3. `status` - `success` or `pending` -  transaction status |
 | `wcRespondError(topic, id, errorText)` | call this method to reject a request | 1. `topic` - `STRING` -  session topic<br>2. `id` - `NUMBER` -  request id<br>3. `errorText` - `optional - STRING` -  error text |
