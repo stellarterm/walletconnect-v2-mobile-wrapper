@@ -32,7 +32,9 @@ Copy the `index.html` from the `dist/` folder to your mobile wallet application 
 | `wcApproveSession(publicKey, topic)` | call this method to confirm session proposal | 1. `publicKey` - `STRING` -  Stellar account public key<br> 2. `proposal` - `STRING` - proposal topic| 
 | `wcRejectSession(topic)` | call this method to reject session proposal | 1. `proposal` - `STRING` - proposal topic||
 | `wcDisconnect(topic)` | call this method to disconnect from a session | 1. `topic` - `STRING` -  session topic | 
-| `wcRespondSuccess(topic, id, status)` | call this method to confirm a request | 1. `topic` - `STRING` -  session topic<br>2. `id` - `NUMBER` -  request id<br>3. `status` - `success` or `pending` -  transaction status |
+| `wcRespondSuccess(topic, id, result)` | call this method to confirm a request with custom data | 1. `topic` - `STRING` -  session topic<br>2. `id` - `NUMBER` -  request id<br>3. `result` - `any` -  result |
+| `wcRespondSuccessWithStatus(topic, id, status)` | call this method to confirm a request with the transaction status | 1. `topic` - `STRING` -  session topic<br>2. `id` - `NUMBER` -  request id<br>3. `status` - `success` or `pending` -  transaction status |
+| `wcRespondSuccessWithSignedXDR(topic, id, signedXDR)` | call this method to confirm a request with the signed xdr | 1. `topic` - `STRING` -  session topic<br>2. `id` - `NUMBER` -  request id<br>3. `signedXDR` - signed XDR |
 | `wcRespondError(topic, id, errorText)` | call this method to reject a request | 1. `topic` - `STRING` -  session topic<br>2. `id` - `NUMBER` -  request id<br>3. `errorText` - `optional - STRING` -  error text |
 
 

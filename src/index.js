@@ -64,8 +64,16 @@ window.wcDisconnect = (topic) => {
   WC.disconnect(topic);
 }
 
-window.wcRespondSuccess = (topic, id, status) => {
-  WC.respondSuccess(topic, id, status);
+window.wcRespondSuccess = (topic, id, result) => {
+  WC.respondSuccess(topic, id, result);
+}
+
+window.wcRespondSuccessWithStatus = (topic, id, status) => {
+  WC.respondSuccess(topic, id, { status });
+}
+
+window.wcRespondSuccessWithSignedXDR = (topic, id, signedXDR) => {
+  WC.respondSuccess(topic, id, signedXDR);
 }
 
 window.wcRespondError = (topic, id, errorText) => {
