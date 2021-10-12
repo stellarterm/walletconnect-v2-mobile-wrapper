@@ -73,7 +73,7 @@ window.wcRespondSuccessWithStatus = (topic, id, status) => {
 }
 
 window.wcRespondSuccessWithSignedXDR = (topic, id, signedXDR) => {
-  WC.respondSuccess(topic, id, signedXDR);
+  WC.respondSuccess(topic, id, { signedXDR });
 }
 
 window.wcRespondError = (topic, id, errorText) => {
